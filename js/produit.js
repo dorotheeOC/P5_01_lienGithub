@@ -80,8 +80,8 @@ const displayData = (data) => {
     newFormGroup.appendChild(newSelectInput);
     newForm.appendChild(newFormGroup);
     newForm.appendChild(formButton);
-    newForm.appendChild(eltResult);
     newContainer.appendChild(newForm);
+    newContainer.appendChild(eltResult);
     newEltCard.appendChild(newContainer);
     newDiv.appendChild(newEltCard);
     eltRow.appendChild(newDiv);
@@ -96,7 +96,32 @@ const displayData = (data) => {
 
     formButton.addEventListener('click', (event) => {
         event.preventDefault();
-        addProduct(data, eltResult, cart); 
+        addProduct(data, eltResult, cart);
+        
+        let eltMsg = document.createElement('div');
+        eltMsg.classList.add('alert');
+        eltMsg.classList.add('alert-success');
+        eltMsg.classList.add('d-flex');
+        eltMsg.classList.add('flex-lg-row');
+        eltMsg.classList.add('flex-column');
+        eltMsg.classList.add('justify-content-center');
+        eltMsg.classList.add('mx-auto');
+        eltMsg.textContent = 'Le produit a bien été ajouté';
+
+        let msgProductLink = document.createElement('a');
+        msgProductLink.classList.add('alert-link');
+        msgProductLink.classList.add('mx-lg-3');
+        msgProductLink.href = 'index.html';
+        msgProductLink.innerHTML = 'Continuer les achats';
+
+        let msgCartLink = document.createElement('a');
+        msgCartLink.classList.add('alert-link');
+        msgCartLink.href = 'panier.html';
+        msgCartLink.innerHTML = 'Voir le panier';
+
+        eltMsg.appendChild(msgProductLink);
+        eltMsg.appendChild(msgCartLink);
+        newContainer.appendChild(eltMsg);
     });
 }
 
