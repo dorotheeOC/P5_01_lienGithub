@@ -1,5 +1,10 @@
+import {getIdFromUrl, list, erreur} from './ajax.js';
+import {Order} from './class.js';
+//-------------------------Import des modules
+Order;
+
 document.getElementById('form').reset();
-// document.onload = localStorage.removeItem('confirm');
+
 //-------------------------recupération du localStorage
 let productAdded = JSON.parse(localStorage.getItem('product'));
 
@@ -11,7 +16,7 @@ if (productAdded == null || productAdded == 0) {
     eltRow.innerHTML = `<p class="panier-message">Votre panier est actuellement vide</p>`
 } else {
         //-------------------------Fonction de suppression du localStorage
-        function remove(id) {
+        const remove = (id) => {
             let product = localStorage.getItem('product') ? JSON.parse(localStorage.getItem('product')) : [];
             let index;
             for (let i = 0; i < product.length; i++) {
@@ -25,7 +30,7 @@ if (productAdded == null || productAdded == 0) {
             localStorage.setItem('product', JSON.stringify(product));
         }
         //-------------------------Fonction de calcul: montant du panier
-        function calc() {
+        const calc = () => {
             let sum = 0;
             for (let i = 0; i < productAdded.length; i++) {
                 sum += productAdded[i].price;
@@ -46,7 +51,7 @@ if (productAdded == null || productAdded == 0) {
 
         clearBtn.addEventListener('click', (event) => {
             localStorage.clear();
-        })
+        });
 
         let newDiv = document.createElement('div');
         newDiv.classList.add('list-group-item');
@@ -62,11 +67,11 @@ if (productAdded == null || productAdded == 0) {
             eltList.classList.add('list-group-item');
 
             let eltTitle = document.createElement('p');
-            eltTitle.classList.add('font-weight-bold')
+            eltTitle.classList.add('font-weight-bold');
             eltTitle.innerHTML = productAdded[i].name;
 
             let eltText = document.createElement('p');
-            eltText.classList.add('font-weight-light')
+            eltText.classList.add('font-weight-light');
             eltText.innerHTML = productAdded[i].varnish;
 
             let eltPriceText = document.createElement('p');
@@ -86,10 +91,9 @@ if (productAdded == null || productAdded == 0) {
 
             eltBtn.addEventListener('click', () => {
                 remove(productAdded[i].id);
-            })
+            });
         }
 }
-console.log(products)
 
 /**BACK END >>>> requete AJAX POST
  *
@@ -106,15 +110,6 @@ console.log(products)
  */
 
 ////class order
-class Order {
-        constructor(firstName, lastName, address, city, email) {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.address = address;
-            this.city = city;
-            this.email = email;
-        }
-}
 
 let inputName = document.getElementById('lastname')
 let inputFirstName = document.getElementById('firstname')
@@ -123,30 +118,31 @@ let inputCity = document.getElementById('city')
 let inputEmail = document.getElementById('email')
 
 const send = () => {
-let request = new XMLHttpRequest();
-request.onload = function() {
-if(request.readyState === request.DONE && request.status === 201) {
-let response = JSON.parse(request.responseText);
-console.log(response)
-localStorage.setItem('confirm', JSON.stringify(response));
-}
-};
-request.open('POST', 'http://localhost:3000/api/furniture/order');
-request.setRequestHeader ('Content-Type', 'application/json');
+    let request = new XMLHttpRequest();
+    request.onload = () => {
+        if (request.readyState === request.DONE && request.status === 201) {
+            let response = JSON.parse(request.responseText);
+            localStorage.setItem('confirm', JSON.stringify(response));
+            redirection();
+        }
+    };
+    request.open('POST', 'http://localhost:3000/api/furniture/order');
+    request.setRequestHeader ('Content-Type', 'application/json');
 
-newOrder = new Order(inputFirstName.value, inputName.value, inputAddress.value, inputCity.value, inputEmail.value);
-let data = {
-    contact: newOrder,
-    products: products
-};
-request.send(JSON.stringify(data));
+    let newOrder = new Order(inputFirstName.value, inputName.value, inputAddress.value, inputCity.value, inputEmail.value);
+    let data = {
+        contact: newOrder,
+        products: products
+    };
+    request.send(JSON.stringify(data));
 }
-const Redirection = () => {
+
+const redirection = () => {
     document.location.href="confirmation.html"; 
-  }
+}
+
 let submit = document.querySelector('form > button');
 submit.addEventListener('click', (event) => {
     event.preventDefault();
     send();
 }); 
-console.log(localStorage.getItem('confirm'));
