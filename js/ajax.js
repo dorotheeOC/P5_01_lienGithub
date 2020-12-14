@@ -7,7 +7,7 @@ export const getIdFromUrl = () => {
 }
 
 //------------------------- Erreur promesse: DOM
-export let erreur = (productId) => {
+export let catchError = (productId) => {
   let eltRow = document.querySelector("div.product");
 
   let alertDiv = document.createElement('div');
@@ -15,7 +15,7 @@ export let erreur = (productId) => {
   alertDiv.classList.add('alert-danger');
   alertDiv.role = 'alert';
 
-  if (productId == null) {
+  if (productId === null) {
     alertDiv.textContent = "Erreur server ! ";
   } else {
     alertDiv.textContent = "Produit inexistant ! ";
@@ -44,5 +44,5 @@ export const list = (url) => {
       }
       request.open('GET', url, true);//ne bloque pas l'exécution du script
       request.send();
-      })  
-    }
+    })  
+}

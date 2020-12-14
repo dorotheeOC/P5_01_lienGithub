@@ -1,7 +1,5 @@
-import {getIdFromUrl, list, erreur} from './ajax.js';
-import {Order} from './class.js';
 //-------------------------Import des modules
-Order;
+import {Order} from './class.js';
 
 document.getElementById('form').reset();
 
@@ -12,7 +10,7 @@ let eltRow = document.querySelector("div.product-added");
 
 let products = []; // Array pour la requête POST
 
-if (productAdded == null || productAdded == 0) {
+if (productAdded === null || productAdded === 0) {
     eltRow.innerHTML = `<p class="panier-message">Votre panier est actuellement vide</p>`
 } else {
         //-------------------------Fonction de suppression du localStorage
@@ -21,7 +19,7 @@ if (productAdded == null || productAdded == 0) {
             let index;
             for (let i = 0; i < product.length; i++) {
                 if (product[i].id === id) {
-                index=i;
+                index = i;
                 break;
                 }
             }
@@ -33,7 +31,9 @@ if (productAdded == null || productAdded == 0) {
         const calc = () => {
             let sum = 0;
             for (let i = 0; i < productAdded.length; i++) {
-                sum += productAdded[i].price;
+                sum += (productAdded[i].price * productAdded[i].quantity);
+                console.log(typeof(productAdded[i].price));
+                console.log(productAdded[i].price);
             }
             return sum;
         }
@@ -55,13 +55,18 @@ if (productAdded == null || productAdded == 0) {
 
         let newDiv = document.createElement('div');
         newDiv.classList.add('list-group-item');
-        newDiv.innerHTML = `<p class="amount">Montant total du panier: <strong>${calc()} €</strong></p>
-                            <p class="text-muted">${productAdded.length} produits</p>`;
+        newDiv.classList.add('total');
+        newDiv.innerHTML = `<p class="amount">Montant total du panier: <strong>${calc()} €</strong></p>`;
 
 
         for (let i = 0; i < productAdded.length; i++) {
 
-            products.push(productAdded[i].id); // Ajout des _id dans un array "products"
+            products.push(productAdded[i].id); // Ajout des _id dans un array "products" (requête POST)
+
+            let newDivInfo = document.createElement('div');
+            newDivInfo.classList.add('list-group-div');
+            let newDivAction = document.createElement('div');
+            newDivAction.classList.add('list-group-div');
             
             let eltList = document.createElement('li');
             eltList.classList.add('list-group-item');
@@ -76,6 +81,10 @@ if (productAdded == null || productAdded == 0) {
 
             let eltPriceText = document.createElement('p');
             eltPriceText.innerHTML = `${productAdded[i].price} €`;
+            
+            let eltQuantity = document.createElement('p');
+            eltQuantity.classList.add('font-weight-light');
+            eltQuantity.innerHTML = `<strong>Quantité : </strong>${productAdded[i].quantity}`;
 
             let eltBtn = document.createElement('a');
             eltBtn.classList.add('text-decoration-none');
@@ -83,14 +92,18 @@ if (productAdded == null || productAdded == 0) {
             eltBtn.textContent = "supprimer";
 
             newList.appendChild(eltList);
-            eltList.appendChild(eltTitle);
-            eltList.appendChild(eltText);
-            eltList.appendChild(eltPriceText);
-            eltList.appendChild(eltBtn);
+            newDivInfo.appendChild(eltTitle);
+            newDivInfo.appendChild(eltText);
+            newDivInfo.appendChild(eltPriceText);
+            newDivAction.appendChild(eltQuantity);
+            newDivAction.appendChild(eltBtn);
+            eltList.appendChild(newDivInfo);
+            eltList.appendChild(newDivAction);
             newList.appendChild(newDiv);
 
             eltBtn.addEventListener('click', () => {
                 remove(productAdded[i].id);
+                console.log(localStorage.getItem('product'));
             });
         }
 }
@@ -125,7 +138,7 @@ const send = () => {
             localStorage.setItem('confirm', JSON.stringify(response));
             redirection();
         }
-    };
+};
     request.open('POST', 'http://localhost:3000/api/furniture/order');
     request.setRequestHeader ('Content-Type', 'application/json');
 
