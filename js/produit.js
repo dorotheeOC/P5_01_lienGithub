@@ -1,10 +1,9 @@
-import {getIdFromUrl, list, erreur} from './ajax.js';
-import {Product} from './class.js';
 //-------------------------Import des modules
+import {getIdFromUrl, list, catchError} from './ajax.js';
+import {Product} from './class.js';
+
 let productId = getIdFromUrl();
-erreur;
-list;
-Product;
+
 //-------------------------Définition d'url GET de la requête AJAX
 const url = !productId ? 'http://localhost:3000/api/furniture/' : 'http://localhost:3000/api/furniture/' + productId;
 
@@ -93,10 +92,10 @@ const displayData = (data) => {
 //-------------------------Récupération du localStorage: condition update cart après chargement (opérateur ternaire ?? (!null || !undefined))
 
     let cart = JSON.parse(localStorage.getItem('product')) || [];
-
     formButton.addEventListener('click', (event) => {
+
         event.preventDefault();
-        addProduct(data, eltResult, cart);
+        addProduct(cart, data, eltResult);
         
         let eltMsg = document.createElement('div');
         eltMsg.classList.add('alert');
@@ -125,12 +124,27 @@ const displayData = (data) => {
     });
 }
 
-const addProduct = (data, eltResult, cart) => {
-    let productToAdd  = new Product(data._id, eltResult.textContent, data.name, data.price);// classe Product instanciée dans le localStorage
-    cart.push(productToAdd); 
+const addProduct = (cart, data, eltResult) => {
+  let productToAdd  = new Product(data._id, eltResult.textContent, data.name, data.price, null, 1);
+    for (let i = 0; i < cart.length; i++) {
+      let index;
+      if( cart[i].id == data._id) {
+        index = i;
+        console.log(cart[i].quantity)
+        let newQuantity = cart[i].quantity += 1;
+        cart.splice(index , 1);
+        productToAdd.quantity = newQuantity;
+      } 
+    } 
+    cart.push(productToAdd)
+    console.log(productToAdd)
     let cartJson = JSON.stringify(cart)
     localStorage.setItem('product', cartJson);
-}
+  }
+      
+
+
+console.log(localStorage.getItem('product'));
 
 //-------------------------Appel de la promesse AJAX dans une fonction
 let getData = () => {
@@ -139,10 +153,10 @@ let getData = () => {
       console.log(data)
       displayData(data);
     })
-  }
-  getData().then((data) => {
-  }).catch((e) => {
-    erreur(productId);
+}
+getData().then((data) => {
+}).catch((e) => {
+    catchError(productId);
   }).then(()=> {
     console.log('fin AJAX')
   })

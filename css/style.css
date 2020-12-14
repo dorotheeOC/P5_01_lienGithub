@@ -88,18 +88,21 @@ form button {
   margin: 1rem auto;
 }
 
+.list-group .total {
+  background-color: #f3e9f1;
+}
 @media screen and (min-width: 700px) {
-  .list-group li {
-    padding: 1.5rem 2rem;
+  .list-group div {
+    padding: 0.2rem 2rem;
     display: flex;
     justify-content: space-evenly;
   }
 }
-.list-group li > * {
+.list-group div > * {
   margin-right: 1rem;
 }
 .list-group div p {
-  margin: 0;
+  margin: 0 0.2rem;
   text-align: center;
 }
 
