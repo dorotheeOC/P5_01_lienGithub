@@ -9,7 +9,6 @@ const url = !productId ? 'http://localhost:3000/api/furniture/' : 'http://localh
 
 const displayData = (data) => {
 
-
     for (let i = 0; i < data.length; i++) {
  
         let eltRow = document.querySelector("div.product");
@@ -39,7 +38,7 @@ const displayData = (data) => {
    
         let  newPrice = document.createElement('p');
         newPrice.classList.add('price');
-        newPrice.innerHTML = `${data[i].price} €`;
+        newPrice.innerHTML = `${(data[i].price /100).toFixed(2)} €`;
    
         let  newBtn = document.createElement('div');
         newBtn.classList.add('text-center');
@@ -64,6 +63,7 @@ let getData = () => {
     displayData(data);
   })
 }
+
 getData().then((data) => {
 }).catch((e) => {
   catchError(productId);

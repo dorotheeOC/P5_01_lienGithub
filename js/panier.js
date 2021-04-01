@@ -31,15 +31,17 @@ if (productAdded === null || productAdded === 0) {
         const calc = () => {
             let sum = 0;
             for (let i = 0; i < productAdded.length; i++) {
-                sum += (productAdded[i].price * productAdded[i].quantity);
+                sum += productAdded[i].price * productAdded[i].quantity
                 console.log(typeof(productAdded[i].price));
                 console.log(productAdded[i].price);
             }
-            return sum;
+            return (sum / 100).toFixed(2);
         }
 
         let newList = document.createElement('ul');
         newList.classList.add('list-group');
+        newList.classList.add('mx-auto');
+        newList.classList.add('my-4');
         eltRow.appendChild(newList);
 
         let clearBtn = document.createElement('a');
@@ -67,6 +69,7 @@ if (productAdded === null || productAdded === 0) {
             newDivInfo.classList.add('list-group-div');
             let newDivAction = document.createElement('div');
             newDivAction.classList.add('list-group-div');
+            newDivAction.classList.add('justify-content-around');
             
             let eltList = document.createElement('li');
             eltList.classList.add('list-group-item');
@@ -80,7 +83,7 @@ if (productAdded === null || productAdded === 0) {
             eltText.innerHTML = productAdded[i].varnish;
 
             let eltPriceText = document.createElement('p');
-            eltPriceText.innerHTML = `${productAdded[i].price} €`;
+            eltPriceText.innerHTML = `${(productAdded[i].price /100).toFixed(2)} €`;
             
             let eltQuantity = document.createElement('p');
             eltQuantity.classList.add('font-weight-light');
