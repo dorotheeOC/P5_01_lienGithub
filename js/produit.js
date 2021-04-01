@@ -36,7 +36,7 @@ const displayData = (data) => {
 
     let  newPrice = document.createElement('p');
     newPrice.classList.add('price');
-    newPrice.innerHTML = `${data.price} €`;          
+    newPrice.innerHTML = `${(data.price /100).toFixed(2)} €`;          
                   
     let newForm = document.createElement('form');
     newForm.action = "panier.html";
@@ -76,11 +76,12 @@ const displayData = (data) => {
     newContainer.appendChild(newParagraph);
     newContainer.appendChild(newPrice);
     newFormGroup.appendChild(newLabel);
+    newContainer.appendChild(eltResult);
     newFormGroup.appendChild(newSelectInput);
     newForm.appendChild(newFormGroup);
     newForm.appendChild(formButton);
     newContainer.appendChild(newForm);
-    newContainer.appendChild(eltResult);
+    
     newEltCard.appendChild(newContainer);
     newDiv.appendChild(newEltCard);
     eltRow.appendChild(newDiv);
@@ -89,46 +90,33 @@ const displayData = (data) => {
         let selected = event.target.value;
         eltResult.innerHTML = selected;
     });
-//-------------------------Récupération du localStorage: condition update cart après chargement (opérateur ternaire ?? (!null || !undefined))
+//-------------------------Récupération du localStorage: condition update cart après chargement
 
     let cart = JSON.parse(localStorage.getItem('product')) || [];
     formButton.addEventListener('click', (event) => {
 
         event.preventDefault();
         addProduct(cart, data, eltResult);
-        
+
         let eltMsg = document.createElement('div');
         eltMsg.classList.add('alert');
         eltMsg.classList.add('alert-success');
-        eltMsg.classList.add('d-flex');
-        eltMsg.classList.add('flex-lg-row');
-        eltMsg.classList.add('flex-column');
-        eltMsg.classList.add('justify-content-center');
         eltMsg.classList.add('mx-auto');
         eltMsg.textContent = 'Le produit a bien été ajouté';
+  
+        newEltCard.appendChild(eltMsg);
 
-        let msgProductLink = document.createElement('a');
-        msgProductLink.classList.add('alert-link');
-        msgProductLink.classList.add('mx-lg-3');
-        msgProductLink.href = 'index.html';
-        msgProductLink.innerHTML = 'Continuer les achats';
-
-        let msgCartLink = document.createElement('a');
-        msgCartLink.classList.add('alert-link');
-        msgCartLink.href = 'panier.html';
-        msgCartLink.innerHTML = 'Voir le panier';
-
-        eltMsg.appendChild(msgProductLink);
-        eltMsg.appendChild(msgCartLink);
-        newContainer.appendChild(eltMsg);
+        setTimeout(() => {
+          newEltCard.removeChild(eltMsg);
+        }, 2000);
     });
 }
 
 const addProduct = (cart, data, eltResult) => {
-  let productToAdd  = new Product(data._id, eltResult.textContent, data.name, data.price, null, 1);
+  let productToAdd  = new Product(data._id, eltResult.textContent, data.name, data.price, data.imageUrl, 1);
     for (let i = 0; i < cart.length; i++) {
       let index;
-      if( cart[i].id == data._id) {
+      if( cart[i].id === data._id && cart[i].varnish === eltResult.textContent) {
         index = i;
         console.log(cart[i].quantity)
         let newQuantity = cart[i].quantity += 1;
@@ -140,9 +128,8 @@ const addProduct = (cart, data, eltResult) => {
     console.log(productToAdd)
     let cartJson = JSON.stringify(cart)
     localStorage.setItem('product', cartJson);
-  }
-      
-
+    console.log(cart);
+}
 
 console.log(localStorage.getItem('product'));
 

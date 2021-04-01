@@ -4,6 +4,7 @@ import {Product} from './class.js';
 //-------------------------recupération du localStorage
 let postData = JSON.parse(localStorage.getItem('confirm'));
 console.log(localStorage.getItem('confirm'));
+let productAdded = JSON.parse(localStorage.getItem('product'));
 
 //-------------------------Vérification du localStorage
 const confirmValid = () => {
@@ -28,8 +29,6 @@ const confirmValid = () => {
             eltRow.appendChild(alertDiv);
         }
 }
-
-
 
 //-------------------------recupération du panier array products
 let review = []; 
@@ -73,11 +72,13 @@ const displayData = () => {
     <strong>Adresse: </strong>${postData.contact.address}<br/> <strong>Ville: </strong>${postData.contact.city}<br/><strong>E-mail: </strong>${postData.contact.email} </p>`;
 
     let sum = 0;
+    let quantity = 0;
 
-    for (let i = 0; i < postData.products.length; i++) {
-        let product = new Product (postData.products[i].id, postData.products[i].varnish, postData.products[i].name, postData.products[i].price, postData.products[i].imageUrl);
+    for (let i = 0; i < productAdded.length; i++) {
+        let product = new Product (productAdded[i].id, productAdded[i].varnish, productAdded[i].name, productAdded[i].price, productAdded[i].img, productAdded[i].quantity);
         review.push(product);
-        sum += product.price;
+        sum += (product.price * product.quantity);
+        quantity += product.quantity;
 
         let containerFlex =  document.createElement('div');
         containerFlex.style.display ='flex';
@@ -90,7 +91,8 @@ const displayData = () => {
         let productParagraph = document.createElement('p');
         productParagraph.classList.add('font-weight-light');
         productParagraph.innerHTML = `<strong>Nom: </strong> ${product.name}<br/>
-        <strong>Prix: </strong> ${product.price} €`;
+        <strong>Prix: </strong> ${product.price} €<br/>
+        <strong>Quantity: </strong> ${product.quantity}`;
 
         containerFlex.appendChild(productImg);
         containerFlex.appendChild(productParagraph);
@@ -103,7 +105,7 @@ const displayData = () => {
     productRow.appendChild(newOrderTitleList);
     productRow.appendChild(productsParagraph);
 
-    total.innerHTML = `<strong>Quantité: </strong>${review.length}<strong> Montant total: </strong>${sum} €`;
+    total.innerHTML = `<strong>Quantité: </strong>${quantity}<strong> Montant total: </strong>${(sum / 100).toFixed(2)} €`;
     total.style.textAlign = 'center';
     productsParagraph.appendChild(total);
 
