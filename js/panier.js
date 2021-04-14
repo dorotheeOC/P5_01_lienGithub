@@ -10,38 +10,37 @@ let eltRow = document.querySelector("div.product-added");
 
 let products = []; // Array pour la requête POST
 
+//-------------------------Fonction de suppression du localStorage
+const remove = (id) => {
+    let product = localStorage.getItem('product') ? JSON.parse(localStorage.getItem('product')) : [];
+    let index;
+    for (let i = 0; i < product.length; i++) {
+        if (product[i].id === id) {
+        index = i;
+        break;
+        }
+    }
+    if (index === undefined) return 
+    product.splice(index, 1);
+    localStorage.setItem('product', JSON.stringify(product));
+}
+
+//-------------------------Fonction de calcul: montant du panier
+const calc = () => {
+    let sum = 0;
+    for (let i = 0; i < productAdded.length; i++) {
+        sum += productAdded[i].price * productAdded[i].quantity
+        console.log(typeof(productAdded[i].price));
+        console.log(productAdded[i].price);
+    }
+    return (sum / 100).toFixed(2);
+}
+
 if (productAdded === null || productAdded === 0) {
     eltRow.innerHTML = `<p class="panier-message">Votre panier est actuellement vide</p>`
 } else {
-        //-------------------------Fonction de suppression du localStorage
-        const remove = (id) => {
-            let product = localStorage.getItem('product') ? JSON.parse(localStorage.getItem('product')) : [];
-            let index;
-            for (let i = 0; i < product.length; i++) {
-                if (product[i].id === id) {
-                index = i;
-                break;
-                }
-            }
-            if (index === undefined) return 
-            product.splice(index, 1);
-            localStorage.setItem('product', JSON.stringify(product));
-        }
-        //-------------------------Fonction de calcul: montant du panier
-        const calc = () => {
-            let sum = 0;
-            for (let i = 0; i < productAdded.length; i++) {
-                sum += productAdded[i].price * productAdded[i].quantity
-                console.log(typeof(productAdded[i].price));
-                console.log(productAdded[i].price);
-            }
-            return (sum / 100).toFixed(2);
-        }
-
         let newList = document.createElement('ul');
-        newList.classList.add('list-group');
-        newList.classList.add('mx-auto');
-        newList.classList.add('my-4');
+        newList.className = 'list-group mx-auto my-4';
         eltRow.appendChild(newList);
 
         let clearBtn = document.createElement('a');
@@ -56,8 +55,7 @@ if (productAdded === null || productAdded === 0) {
         });
 
         let newDiv = document.createElement('div');
-        newDiv.classList.add('list-group-item');
-        newDiv.classList.add('total');
+        newDiv.className = 'list-group-item total';
         newDiv.innerHTML = `<p class="amount">Montant total du panier: <strong>${calc()} €</strong></p>`;
 
 
@@ -68,8 +66,7 @@ if (productAdded === null || productAdded === 0) {
             let newDivInfo = document.createElement('div');
             newDivInfo.classList.add('list-group-div');
             let newDivAction = document.createElement('div');
-            newDivAction.classList.add('list-group-div');
-            newDivAction.classList.add('justify-content-around');
+            newDivAction.className = 'list-group-div justify-content-around';
             
             let eltList = document.createElement('li');
             eltList.classList.add('list-group-item');
@@ -160,5 +157,18 @@ const redirection = () => {
 let submit = document.querySelector('form > button');
 submit.addEventListener('click', (event) => {
     event.preventDefault();
-    send();
+    if (products.length > 0) {
+        send();
+    } else {
+        let eltContainer = document.querySelector('div.container')
+        let eltMsg = document.createElement('div');
+        eltMsg.className = 'alert alert-danger mx-auto'
+        eltMsg.textContent = 'Ajouter un article pour valider une commande';
+  
+        eltContainer.appendChild(eltMsg);
+
+        setTimeout(() => {
+            eltContainer.removeChild(eltMsg);
+        }, 2000);
+    }
 }); 

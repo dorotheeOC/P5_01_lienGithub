@@ -99,9 +99,7 @@ const displayData = (data) => {
         addProduct(cart, data, eltResult);
 
         let eltMsg = document.createElement('div');
-        eltMsg.classList.add('alert');
-        eltMsg.classList.add('alert-success');
-        eltMsg.classList.add('mx-auto');
+        eltMsg.className = 'alert alert-success mx-auto'
         eltMsg.textContent = 'Le produit a bien été ajouté';
   
         newEltCard.appendChild(eltMsg);
